@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-tracker
+  labels:
+    app: node-tracker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-tracker
+  template:
+    metadata:
+      labels:
+        app: node-tracker
+    spec:
+      containers:
+      - name: node
+        image: idocontainer10.azurecr.io/idosheffernodeweight:185
+        ports:
+          - containerPort: 8080
+            protocol: TCP       
+        env:
+         - name: PORT
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: PORT
+         - name: HOST
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: HOST
+         - name: NODE_ENV
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: NODE_ENV
+         - name: HOST_URL
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: HOST_URL
+         - name: COOKIE_ENCRYPT_PWD
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: COOKIE_ENCRYPT_PWD
+         - name: OKTA_ORG_URL
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: OKTA_ORG_URL
+         - name: OKTA_CLIENT_ID
+           valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: OKTA_CLIENT_ID
+         - name: OKTA_CLIENT_SECRET
+           valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: OKTA_CLIENT_SECRET
+         - name: PGHOST
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: PGHOST
+         - name: PGUSERNAME
+           valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: PGUSERNAME
+         - name: PGDATABASE
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: PGDATABASE
+         - name: PGPASSWORD
+           valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: PGPASSWORD
+         - name: PGPORT
+           valueFrom:
+                configMapKeyRef:
+                  name: node-tracker-config
+                  key: PGPORT        
+        
